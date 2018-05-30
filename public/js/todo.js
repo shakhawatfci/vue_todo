@@ -13186,72 +13186,83 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-			data: function data() {
+	data: function data() {
 
-						return {
+		return {
 
-									todo: {
+			todo: {
 
-												title: '',
-												name: '',
-												image: ''
-									},
-
-									errors: null
-						};
+				title: '',
+				name: '',
+				image: ''
 			},
 
-			methods: {
+			errors: null
+		};
+	},
 
-						// image fortion 
+	methods: {
 
-						onFileChange: function onFileChange(e) {
-									var files = e.target.files || e.dataTransfer.files;
-									if (!files.length) return;
-									this.createImage(files[0]);
-						},
-						createImage: function createImage(file) {
-									var reader = new FileReader();
-									var vm = this;
-									reader.onload = function (e) {
-												vm.todo.image = e.target.result;
-									};
-									reader.readAsDataURL(file);
-						},
-						storeTodo: function storeTodo() {
-									var _this = this;
+		// image fortion 
 
-									axios.post(base_url + '/todo', this.todo).then(function (response) {
+		previewImage: function previewImage(event) {
+			var _this = this;
 
-												$('#create-todo').modal('hide');
-
-												_this.todo = { 'title': '', 'name': '', 'image': '' };
-												_this.errors = null;
-
-												_this.showMessage(response.data);
-									}).catch(function (error) {
-
-												if (error.response) {
-
-															_this.errors = error.response.data.errors;
-												}
-									});
-						},
-						showMessage: function showMessage(data) {
-									if (data.status == 'success') {
-
-												toastr.success(data.message, 'Success Alert', { timeOut: 500 });
-									} else {
-
-												toastr.error(data.message, 'Error Alert', { timeOut: 500 });
-									}
-						}
+			// Reference to the DOM input element
+			var input = event.target;
+			// Ensure that you have a file before attempting to read it
+			if (input.files && input.files[0]) {
+				// create a new FileReader to read this image and convert to base64 format
+				var reader = new FileReader();
+				// Define a callback function to run, when FileReader finishes its job
+				reader.onload = function (e) {
+					// Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+					// Read image as base64 and set to imageData
+					_this.todo.image = e.target.result;
+				};
+				// Start the reader job - read file as a data url (base64 format)
+				reader.readAsDataURL(input.files[0]);
 			}
+		},
+
+		storeTodo: function storeTodo() {
+			var _this2 = this;
+
+			axios.post(base_url + '/todo', this.todo).then(function (response) {
+
+				$('#create-todo').modal('hide');
+
+				_this2.todo = { 'title': '', 'name': '', 'image': '' };
+				_this2.errors = null;
+
+				_this2.showMessage(response.data);
+			}).catch(function (error) {
+
+				if (error.response) {
+
+					_this2.errors = error.response.data.errors;
+				}
+			});
+		},
+		showMessage: function showMessage(data) {
+			if (data.status == 'success') {
+
+				toastr.success(data.message, 'Success Alert', { timeOut: 500 });
+			} else {
+
+				toastr.error(data.message, 'Error Alert', { timeOut: 500 });
+			}
+		}
+	}
 });
 
 /***/ }),
@@ -13358,13 +13369,26 @@ var render = function() {
                       })
                     ]),
                     _vm._v(" "),
+                    _vm.todo.image
+                      ? _c("div", { staticClass: "form-group" }, [
+                          _c("img", {
+                            staticClass: "img-responsive",
+                            attrs: {
+                              src: _vm.todo.image,
+                              height: "70",
+                              width: "90"
+                            }
+                          })
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
                     _c("div", { staticClass: "form-group" }, [
                       _vm._m(3),
                       _vm._v(" "),
                       _c("input", {
                         staticClass: "form-control",
                         attrs: { type: "file", placeholder: "Enter Title" },
-                        on: { change: _vm.onFileChange }
+                        on: { change: _vm.previewImage }
                       })
                     ]),
                     _vm._v(" "),
@@ -13399,7 +13423,7 @@ var staticRenderFns = [
       ),
       _vm._v(" "),
       _c("h4", { staticClass: "modal-title", attrs: { id: "myModalLabel" } }, [
-        _vm._v(" Create User")
+        _vm._v(" Create Todo")
       ])
     ])
   },
@@ -13499,14 +13523,75 @@ module.exports = Component.exports
 
 /***/ }),
 /* 51 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_assets__ = __webpack_require__(1);
 //
 //
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+        data: function data() {
+
+                return {
+
+                        todos: [],
+                        url: ''
+
+                };
+        },
+        created: function created() {
+
+                this.getData();
+
+                this.url = base_url;
+        },
+
+
+        methods: {
+                getData: function getData() {
+                        var _this = this;
+
+                        axios.get(base_url + "/todoList").then(function (response) {
+
+                                _this.todos = response.data;
+                        }).catch(function (err) {
+
+                                console.log(err);
+                        });
+                }
+        }
+});
 
 /***/ }),
 /* 52 */
@@ -13516,16 +13601,66 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "wrap" }, [
+    _c("div", { staticClass: "table-responsive" }, [
+      _c(
+        "table",
+        { staticClass: "table table-bordered table-striped" },
+        [
+          _vm._m(0),
+          _vm._v(" "),
+          _vm._l(_vm.todos, function(value, index) {
+            return _c("tr", { key: index, staticClass: "tr" }, [
+              _c("td", [_vm._v(_vm._s(value.name))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(value.title))]),
+              _vm._v(" "),
+              _c("td", [
+                _c("img", {
+                  staticStyle: { height: "90px" },
+                  attrs: { src: _vm.url + "/images/" + value.image }
+                })
+              ]),
+              _vm._v(" "),
+              _vm._m(1, true),
+              _vm._v(" "),
+              _vm._m(2, true)
+            ])
+          })
+        ],
+        2
+      )
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "wrap" }, [
-      _c("h1", [_vm._v("View Toodo")])
+    return _c("tr", [
+      _c("th", [_vm._v("Name")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Title")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Image")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Edit")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Delete")])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [_c("a", { attrs: { href: "" } }, [_vm._v("edit")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [_c("a", { attrs: { href: "" } }, [_vm._v("delete")])])
   }
 ]
 render._withStripped = true

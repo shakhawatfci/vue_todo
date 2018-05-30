@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\TodoList;
 use Illuminate\Http\Request;
+use Image;
 
 class TodoListController extends Controller
 {
@@ -15,6 +16,15 @@ class TodoListController extends Controller
     public function index()
     {
        return view('todo_list');
+    }
+
+
+    public function TodoList(){
+
+
+        $result = TodoList::orderBy('id','desc')->get();
+
+        return $result;
     }
 
     /**
@@ -39,14 +49,15 @@ class TodoListController extends Controller
       $this->validate($request, [
             'name'  => 'required',
             'title' => 'required',
-            'image' => 'required|image64:jpeg,jpg,png'
+            // 'image' => 'required|image64:jpeg,jpg,png'
         ]);
 
          try{
         
-              $imageData = $request->get('image');
-        $fileName = Carbon::now()->timestamp . '_' . uniqid() . '.' . explode('/', explode(':', substr($imageData, 0, strpos($imageData, ';')))[1])[1];
+            $imageData = $request->get('image');
+        $fileName = uniqid() . '.' . explode('/', explode(':', substr($imageData, 0, strpos($imageData, ';')))[1])[1];
         Image::make($request->get('image'))->save(public_path('images/').$fileName);
+
 
        $todo = new TodoList;
        $todo->name = $request->name;

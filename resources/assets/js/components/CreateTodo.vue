@@ -5,7 +5,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title" id="myModalLabel"> Create User</h4>
+                        <h4 class="modal-title" id="myModalLabel"> Create Todo</h4>
                     </div>
                     <div class="modal-body">
                         <div class="alert alert-danger" v-if="errors">
@@ -22,11 +22,15 @@
                             <div class="form-group">
                                 <label for="lable">Title<span class="requiredField">*</span></label>
                                 <input type="text" class="form-control" v-model="todo.title" placeholder="Enter Title"/>
-                            </div>   
+                            </div> 
+
+                            <div class="form-group" v-if="todo.image">
+                                                            <img :src="todo.image" class="img-responsive" height="70" width="90">
+                            </div>  
 
                             <div class="form-group">
                                 <label for="lable">Image<span class="requiredField">*</span></label>
-                                <input type="file" class="form-control" v-on:change="onFileChange" placeholder="Enter Title" />
+                                <input type="file" class="form-control" v-on:change="previewImage" placeholder="Enter Title" />
                             </div>
 
 
@@ -65,20 +69,23 @@ export default{
 
 		// image fortion 
 
-		 onFileChange(e) {
-                let files = e.target.files || e.dataTransfer.files;
-                if (!files.length)
-                    return;
-                this.createImage(files[0]);
-            },
-            createImage(file) {
-                let reader = new FileReader();
-                let vm = this;
+	        previewImage: function(event) {
+            // Reference to the DOM input element
+            var input = event.target;
+            // Ensure that you have a file before attempting to read it
+            if (input.files && input.files[0]) {
+                // create a new FileReader to read this image and convert to base64 format
+                var reader = new FileReader();
+                // Define a callback function to run, when FileReader finishes its job
                 reader.onload = (e) => {
-                    vm.todo.image = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            },
+                    // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+                    // Read image as base64 and set to imageData
+                    this.todo.image = e.target.result;
+                }
+                // Start the reader job - read file as a data url (base64 format)
+                reader.readAsDataURL(input.files[0]);
+            }
+        },
 
 		   storeTodo() {
 

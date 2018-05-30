@@ -20,6 +20,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('todo','TodoListController@index');
+Route::get('todoList','TodoListController@TodoList');
 
 Route::post('todo','TodoListController@store');
 

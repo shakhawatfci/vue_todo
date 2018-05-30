@@ -15,7 +15,7 @@
                     @endif
                         <div class="create text-right">
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-todo">
-                                <i class="glyphicon glyphicon-plus"></i> Create User
+                                <i class="glyphicon glyphicon-plus"></i> Create Todo
                             </button>
                             <br>
                             <br>
