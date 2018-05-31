@@ -13195,74 +13195,83 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	data: function data() {
+   data: function data() {
 
-		return {
+      return {
 
-			todo: {
+         todo: {
 
-				title: '',
-				name: '',
-				image: ''
-			},
+            title: '',
+            name: '',
+            image: ''
+         },
 
-			errors: null
-		};
-	},
+         errors: null
+      };
+   },
 
-	methods: {
+   methods: {
 
-		// image fortion 
+      // image fortion 
 
-		previewImage: function previewImage(event) {
-			var _this = this;
+      previewImage: function previewImage(event) {
+         var _this = this;
 
-			// Reference to the DOM input element
-			var input = event.target;
-			// Ensure that you have a file before attempting to read it
-			if (input.files && input.files[0]) {
-				// create a new FileReader to read this image and convert to base64 format
-				var reader = new FileReader();
-				// Define a callback function to run, when FileReader finishes its job
-				reader.onload = function (e) {
-					// Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
-					// Read image as base64 and set to imageData
-					_this.todo.image = e.target.result;
-				};
-				// Start the reader job - read file as a data url (base64 format)
-				reader.readAsDataURL(input.files[0]);
-			}
-		},
+         // Reference to the DOM input element
+         var input = event.target;
+         // Ensure that you have a file before attempting to read it
+         if (input.files && input.files[0]) {
+            // create a new FileReader to read this image and convert to base64 format
+            var reader = new FileReader();
+            // Define a callback function to run, when FileReader finishes its job
+            reader.onload = function (e) {
+               // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+               // Read image as base64 and set to imageData
+               _this.todo.image = e.target.result;
+            };
+            // Start the reader job - read file as a data url (base64 format)
+            reader.readAsDataURL(input.files[0]);
+         }
+      },
 
-		storeTodo: function storeTodo() {
-			var _this2 = this;
+      storeTodo: function storeTodo() {
+         var _this2 = this;
 
-			axios.post(base_url + '/todo', this.todo).then(function (response) {
+         axios.post(base_url + '/todo', this.todo).then(function (response) {
 
-				$('#create-todo').modal('hide');
+            $('#create-todo').modal('hide');
 
-				_this2.todo = { 'title': '', 'name': '', 'image': '' };
-				_this2.errors = null;
+            _this2.todo = { 'title': '', 'name': '', 'image': '' };
+            _this2.errors = null;
 
-				_this2.showMessage(response.data);
-			}).catch(function (error) {
+            _this2.showMessage(response.data);
 
-				if (error.response) {
+            __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', response.data);
+         }).catch(function (error) {
 
-					_this2.errors = error.response.data.errors;
-				}
-			});
-		},
-		showMessage: function showMessage(data) {
-			if (data.status == 'success') {
+            if (error.response) {
 
-				toastr.success(data.message, 'Success Alert', { timeOut: 500 });
-			} else {
+               _this2.errors = error.response.data.errors;
+            }
+         });
+      },
+      showMessage: function showMessage(data) {
+         if (data.status == 'success') {
 
-				toastr.error(data.message, 'Error Alert', { timeOut: 500 });
-			}
-		}
-	}
+            toastr.success(data.message, 'Success Alert', { timeOut: 500 });
+         } else {
+
+            toastr.error(data.message, 'Error Alert', { timeOut: 500 });
+         }
+      }
+   },
+   mounted: function mounted() {
+      var vm = this;
+      $('#create-todo').on('hidden.bs.modal', function () {
+         vm.errors = null;
+         vm.todo = { 'title': '', 'name': '', 'image': '' };
+      });
+   }
 });
 
 /***/ }),
@@ -13528,6 +13537,334 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_assets__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UpdateTodo_vue__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UpdateTodo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__UpdateTodo_vue__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+	components: {
+
+		'update-todo': __WEBPACK_IMPORTED_MODULE_1__UpdateTodo_vue___default.a
+
+	},
+
+	data: function data() {
+
+		return {
+
+			todos: [],
+			url: ''
+
+		};
+	},
+	created: function created() {
+
+		var _this = this;
+
+		this.getData();
+
+		this.url = base_url;
+
+		__WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$on('todo-created', function () {
+			window.history.pushState({}, null, location.pathname);
+			_this.getData();
+		});
+	},
+
+
+	methods: {
+		getData: function getData() {
+			var _this2 = this;
+
+			axios.get(base_url + "/todoList").then(function (response) {
+
+				_this2.todos = response.data;
+			}).catch(function (err) {
+
+				console.log(err);
+			});
+		},
+		editTodo: function editTodo(id) {
+
+			__WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('edit-buton-clicked', id);
+		},
+		deleteTodo: function deleteTodo(id) {
+			var _this3 = this;
+
+			if (confirm('Are You Sure ?')) {
+
+				axios.delete(base_url + "todo/delete/" + id).then(function (response) {
+
+					if (response.data.status == 'success') {
+
+						_this3.showMassage(response.data);
+
+						__WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', response.data);
+					} else {
+
+						_this3.showMassage(response.data);
+					}
+				}).catch(function (err) {
+
+					console.log(err);
+				});
+			}
+		},
+		showMassage: function showMassage(data) {
+			if (data.status == 'success') {
+				toastr.success(data.message, 'Success Alert', { timeOut: 5000 });
+			} else {
+				toastr.error(data.message, 'Error Alert', { timeOut: 5000 });
+			}
+		},
+		goBack: function goBack() {
+
+			window.history.back();
+		}
+	}
+});
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "wrap" },
+    [
+      _c("div", { staticClass: "table-responsive" }, [
+        _c(
+          "table",
+          { staticClass: "table table-bordered table-striped" },
+          [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._l(_vm.todos, function(value, index) {
+              return _c(
+                "tr",
+                {
+                  key: index,
+                  staticClass: "tr",
+                  staticStyle: { "border-bottom": "1px solid #ccc" }
+                },
+                [
+                  _c("td", [_vm._v(_vm._s(value.name))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(value.title))]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("img", {
+                      staticStyle: { height: "90px" },
+                      attrs: { src: _vm.url + "/images/" + value.image }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-success",
+                        attrs: { href: "" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.editTodo(value.id)
+                          }
+                        }
+                      },
+                      [_vm._v("edit")]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-danger",
+                        attrs: { href: "" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.deleteTodo(value.id)
+                          }
+                        }
+                      },
+                      [_vm._v("delete")]
+                    )
+                  ])
+                ]
+              )
+            })
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          { staticClass: "btn btn-success", on: { click: _vm.goBack } },
+          [_vm._v("Back To previous")]
+        )
+      ]),
+      _vm._v(" "),
+      _c("update-todo")
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", [_vm._v("Name")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Title")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Image")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Edit")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Delete")])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-d47fb4fc", module.exports)
+  }
+}
+
+/***/ }),
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(4)
+/* script */
+var __vue_script__ = __webpack_require__(64)
+/* template */
+var __vue_template__ = __webpack_require__(65)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\UpdateTodo.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-da857834", Component.options)
+  } else {
+    hotAPI.reload("data-v-da857834", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 64 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_assets__ = __webpack_require__(1);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -13561,106 +13898,296 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-        data: function data() {
+    name: 'update-todo',
+    data: function data() {
 
-                return {
+        return {
 
-                        todos: [],
-                        url: ''
+            todo: {
+                id: '',
+                name: '',
+                title: '',
+                image: '',
+                imageStatus: 0
 
+            },
+            errors: null,
+
+            changeImage: false,
+
+            url: base_url
+        };
+    },
+    created: function created() {
+        var vm = this;
+        __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$on('edit-buton-clicked', function (id) {
+
+            $('#update-todo').modal('show');
+            vm.todo.id = id;
+            axios.get(base_url + '/todo/edit/' + id).then(function (res) {
+                vm.todo = { 'id': res.data.id, 'name': res.data.name, 'title': res.data.title, 'image': res.data.image };
+            });
+        });
+
+        $('#update-todo').on('hidden.bs.modal', function () {
+            vm.errors = null;
+            vm.todo = { 'id': '', 'name': '', 'title': '', 'image': '', 'imageStatus': 0 };
+
+            // EventBus.$emit('todo-created',vm.todo);
+        });
+    },
+
+
+    methods: {
+
+        previewImage: function previewImage(event) {
+            var _this = this;
+
+            // Reference to the DOM input element
+            var input = event.target;
+            // Ensure that you have a file before attempting to read it
+            if (input.files && input.files[0]) {
+                // create a new FileReader to read this image and convert to base64 format
+                var reader = new FileReader();
+                // Define a callback function to run, when FileReader finishes its job
+                reader.onload = function (e) {
+                    // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+                    // Read image as base64 and set to imageData
+                    _this.changeImage = true;
+                    _this.todo.image = e.target.result;
+                    _this.todo.imageStatus = 1;
                 };
-        },
-        created: function created() {
-
-                this.getData();
-
-                this.url = base_url;
+                // Start the reader job - read file as a data url (base64 format)
+                reader.readAsDataURL(input.files[0]);
+            }
         },
 
+        UpdateTodo: function UpdateTodo(id) {
+            var _this2 = this;
 
-        methods: {
-                getData: function getData() {
-                        var _this = this;
+            axios.put(base_url + '/todo/update/' + this.todo.id, this.todo).then(function (res) {
 
-                        axios.get(base_url + "/todoList").then(function (response) {
+                if (res.status == 'success') {
 
-                                _this.todos = response.data;
-                        }).catch(function (err) {
+                    _this2.showMassage(res.data);
 
-                                console.log(err);
-                        });
+                    __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', res);
                 }
+            }).catch(function (error) {
+
+                if (error.response) {
+
+                    _this2.errors = error.response.data.errors;
+                }
+            });
+        },
+        showMassage: function showMassage(data) {
+            if (data.status == 'success') {
+                toastr.success(data.message, 'Success Alert', { timeOut: 5000 });
+            } else {
+                toastr.error(data.message, 'Error Alert', { timeOut: 5000 });
+            }
         }
+    }
+
 });
 
 /***/ }),
-/* 52 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "wrap" }, [
-    _c("div", { staticClass: "table-responsive" }, [
-      _c(
-        "table",
-        { staticClass: "table table-bordered table-striped" },
-        [
+  return _c(
+    "div",
+    {
+      staticClass: "modal fade",
+      attrs: { id: "update-todo", tabindex: "-1", role: "dialog" }
+    },
+    [
+      _c("div", { staticClass: "modal-dialog", attrs: { role: "document" } }, [
+        _c("div", { staticClass: "modal-content" }, [
           _vm._m(0),
           _vm._v(" "),
-          _vm._l(_vm.todos, function(value, index) {
-            return _c("tr", { key: index, staticClass: "tr" }, [
-              _c("td", [_vm._v(_vm._s(value.name))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(value.title))]),
-              _vm._v(" "),
-              _c("td", [
-                _c("img", {
-                  staticStyle: { height: "90px" },
-                  attrs: { src: _vm.url + "/images/" + value.image }
-                })
-              ]),
-              _vm._v(" "),
-              _vm._m(1, true),
-              _vm._v(" "),
-              _vm._m(2, true)
-            ])
-          })
-        ],
-        2
-      )
-    ])
-  ])
+          _c("div", { staticClass: "modal-body" }, [
+            _vm.errors
+              ? _c("div", { staticClass: "alert alert-danger" }, [
+                  _c(
+                    "ul",
+                    _vm._l(_vm.errors, function(error) {
+                      return _c("li", [_vm._v(_vm._s(error[0]))])
+                    })
+                  )
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: { method: "POST", enctype: "multipart/form-data" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    _vm.UpdateTodo(_vm.todo.id)
+                  }
+                }
+              },
+              [
+                _c("div", { staticClass: "form-group" }, [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.todo.name,
+                        expression: "todo.name"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text", placeholder: "Enter Your Name" },
+                    domProps: { value: _vm.todo.name },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.todo, "name", $event.target.value)
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.todo.title,
+                        expression: "todo.title"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text", placeholder: "Enter Title" },
+                    domProps: { value: _vm.todo.title },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.todo, "title", $event.target.value)
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                !_vm.changeImage
+                  ? _c("div", { staticClass: "form-group" }, [
+                      _c("img", {
+                        staticClass: "img-responsive",
+                        attrs: {
+                          src: _vm.url + "/images/" + _vm.todo.image,
+                          height: "70",
+                          width: "90"
+                        }
+                      })
+                    ])
+                  : _c("div", { staticClass: "form-group" }, [
+                      _c("img", {
+                        staticClass: "img-responsive",
+                        attrs: {
+                          src: _vm.todo.image,
+                          height: "70",
+                          width: "90"
+                        }
+                      })
+                    ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _vm._m(3),
+                  _vm._v(" "),
+                  _c("input", {
+                    staticClass: "form-control",
+                    attrs: { type: "file", placeholder: "Enter Title" },
+                    on: { change: _vm.previewImage }
+                  })
+                ]),
+                _vm._v(" "),
+                _vm._m(4)
+              ]
+            )
+          ])
+        ])
+      ])
+    ]
+  )
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", [_vm._v("Name")]),
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      ),
       _vm._v(" "),
-      _c("th", [_vm._v("Title")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Image")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Edit")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Delete")])
+      _c("h4", { staticClass: "modal-title", attrs: { id: "myModalLabel" } }, [
+        _vm._v(" Update User")
+      ])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [_c("a", { attrs: { href: "" } }, [_vm._v("edit")])])
+    return _c("label", { attrs: { for: "lable" } }, [
+      _vm._v("Name"),
+      _c("span", { staticClass: "requiredField" }, [_vm._v("*")])
+    ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [_c("a", { attrs: { href: "" } }, [_vm._v("delete")])])
+    return _c("label", { attrs: { for: "lable" } }, [
+      _vm._v("Title"),
+      _c("span", { staticClass: "requiredField" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { attrs: { for: "lable" } }, [
+      _vm._v("Image"),
+      _c("span", { staticClass: "requiredField" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      { staticClass: "btn btn-primary btn-block", attrs: { type: "submit" } },
+      [_c("i", { staticClass: "glyphicon glyphicon-ok" }), _vm._v(" Save")]
+    )
   }
 ]
 render._withStripped = true
@@ -13668,7 +14195,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-d47fb4fc", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-da857834", module.exports)
   }
 }
 

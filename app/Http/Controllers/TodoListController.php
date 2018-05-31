@@ -15,17 +15,17 @@ class TodoListController extends Controller
      */
     public function index()
     {
-       return view('todo_list');
-    }
+     return view('todo_list');
+ }
 
 
-    public function TodoList(){
+ public function TodoList(){
 
 
-        $result = TodoList::orderBy('id','desc')->get();
+    $result = TodoList::orderBy('id','desc')->get();
 
-        return $result;
-    }
+    return $result;
+}
 
     /**
      * Show the form for creating a new resource.
@@ -47,34 +47,34 @@ class TodoListController extends Controller
     {
 
       $this->validate($request, [
-            'name'  => 'required',
-            'title' => 'required',
+        'name'  => 'required',
+        'title' => 'required',
             // 'image' => 'required|image64:jpeg,jpg,png'
-        ]);
+    ]);
 
-         try{
-        
-            $imageData = $request->get('image');
+      try{
+
+        $imageData = $request->get('image');
         $fileName = uniqid() . '.' . explode('/', explode(':', substr($imageData, 0, strpos($imageData, ';')))[1])[1];
         Image::make($request->get('image'))->save(public_path('images/').$fileName);
 
 
-       $todo = new TodoList;
-       $todo->name = $request->name;
-       $todo->title = $request->title;
-       $todo->image = $fileName;
+        $todo = new TodoList;
+        $todo->name = $request->name;
+        $todo->title = $request->title;
+        $todo->image = $fileName;
 
-       $todo->save();
+        $todo->save();
 
-      return response()->json(['status'=>'success','message'=>'User successfully updated !']);
-          }
-
-        catch(\Exception $e){
-            return response()->json(['status'=>'error','message'=>'Something Error Found !, Please try again']);
-        }
-
-
+        return response()->json(['status'=>'success','message'=>'User successfully updated !']);
     }
+
+    catch(\Exception $e){
+        return response()->json(['status'=>'error','message'=>'Something Error Found !, Please try again']);
+    }
+
+
+}
 
     /**
      * Display the specified resource.
@@ -95,7 +95,7 @@ class TodoListController extends Controller
      */
     public function edit(TodoList $todoList)
     {
-        //
+       return $todoList;
     }
 
     /**
@@ -105,10 +105,48 @@ class TodoListController extends Controller
      * @param  \App\TodoList  $todoList
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TodoList $todoList)
+    public function update(Request $request,$id)
     {
-        //
+     $this->validate($request, [
+        'name'  => 'required',
+        'title' => 'required',
+            // 'image' => 'required|image64:jpeg,jpg,png'
+    ]);
+      
+
+     try{
+
+
+           $todo = TodoList::find($id);
+
+   
+
+        if($request->imageStatus == 1){ 
+           if(file_exists('images/'.$todo->image) && !empty($todo->image)){
+
+            unlink('images/'.$todo->image);
+        }
+             $imageData = $request->get('image');
+
+        $fileName = uniqid() . '.' . explode('/', explode(':', substr($imageData, 0, strpos($imageData, ';')))[1])[1];
+        Image::make($request->get('image'))->save(public_path('images/').$fileName);
+        $todo->image = $fileName;
+
     }
+ 
+    $todo->name = $request->name;
+    $todo->title = $request->title;
+    $todo->update();
+
+    return response()->json(['status'=>'success','message'=>'Todo List successfully updated !']);
+}
+
+catch(\Exception $e){
+
+    return response()->json(['status'=>'error','message'=>'Something Error Found !, Please try again']);
+
+}
+}
 
     /**
      * Remove the specified resource from storage.
@@ -116,8 +154,17 @@ class TodoListController extends Controller
      * @param  \App\TodoList  $todoList
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TodoList $todoList)
+    public function destroy($id)
     {
-        //
+     $todo =  TodoList::find($id);
+
+     if(file_exists('images/'.$todo->image) && !empty($todo->image)){
+
+        unlink('images/'.$todo->image);
     }
+
+    $todo->delete();
+
+    return response()->json(['status'=>'success','message'=>'Delete Success']);
+}
 }

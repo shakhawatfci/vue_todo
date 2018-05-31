@@ -99,6 +99,8 @@ export default{
 
 			  this.showMessage(response.data);
 
+              EventBus.$emit('todo-created',response.data);
+
 			}).catch(error => {
 
 				if(error.response){
@@ -119,6 +121,13 @@ export default{
           }
 		}
 	},
+    mounted(){
+            var vm = this;
+            $('#create-todo').on('hidden.bs.modal', function(){
+                vm.errors = null;
+                vm.todo = {'title':'','name':'','image':''};
+            });
+        }
 }
 
 	
