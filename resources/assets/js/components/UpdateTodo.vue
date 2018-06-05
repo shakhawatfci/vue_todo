@@ -40,7 +40,7 @@
 
 
 
-                            <button type="submit" class="btn btn-primary btn-block"><i class="glyphicon glyphicon-ok"></i> Save</button>
+                            <button type="submit" class="btn btn-primary btn-block"><i class="glyphicon glyphicon-ok"></i>Update</button>
 
                         </form>
                 </div>
@@ -132,8 +132,8 @@
                  if(res.status == 'success'){
                  
                   	this.showMassage(res.data);
-                    
-                    EventBus.$emit('todo-created',res);
+                    $('#update-todo').modal('hide');
+                    EventBus.$emit('todo-created',res.data);
 
                  }
 

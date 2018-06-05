@@ -13492,7 +13492,7 @@ var normalizeComponent = __webpack_require__(4)
 /* script */
 var __vue_script__ = __webpack_require__(51)
 /* template */
-var __vue_template__ = __webpack_require__(52)
+var __vue_template__ = __webpack_require__(55)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -13537,7 +13537,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_assets__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UpdateTodo_vue__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UpdateTodo_vue__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UpdateTodo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__UpdateTodo_vue__);
 //
 //
@@ -13664,140 +13664,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "wrap" },
-    [
-      _c("div", { staticClass: "table-responsive" }, [
-        _c(
-          "table",
-          { staticClass: "table table-bordered table-striped" },
-          [
-            _vm._m(0),
-            _vm._v(" "),
-            _vm._l(_vm.todos, function(value, index) {
-              return _c(
-                "tr",
-                {
-                  key: index,
-                  staticClass: "tr",
-                  staticStyle: { "border-bottom": "1px solid #ccc" }
-                },
-                [
-                  _c("td", [_vm._v(_vm._s(value.name))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(value.title))]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("img", {
-                      staticStyle: { height: "90px" },
-                      attrs: { src: _vm.url + "/images/" + value.image }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c(
-                      "a",
-                      {
-                        staticClass: "btn btn-success",
-                        attrs: { href: "" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            _vm.editTodo(value.id)
-                          }
-                        }
-                      },
-                      [_vm._v("edit")]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c(
-                      "a",
-                      {
-                        staticClass: "btn btn-danger",
-                        attrs: { href: "" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            _vm.deleteTodo(value.id)
-                          }
-                        }
-                      },
-                      [_vm._v("delete")]
-                    )
-                  ])
-                ]
-              )
-            })
-          ],
-          2
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          { staticClass: "btn btn-success", on: { click: _vm.goBack } },
-          [_vm._v("Back To previous")]
-        )
-      ]),
-      _vm._v(" "),
-      _c("update-todo")
-    ],
-    1
-  )
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", [_vm._v("Name")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Title")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Image")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Edit")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Delete")])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-d47fb4fc", module.exports)
-  }
-}
-
-/***/ }),
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var disposed = false
 var normalizeComponent = __webpack_require__(4)
 /* script */
-var __vue_script__ = __webpack_require__(64)
+var __vue_script__ = __webpack_require__(53)
 /* template */
-var __vue_template__ = __webpack_require__(65)
+var __vue_template__ = __webpack_require__(54)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -13836,7 +13708,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 64 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13970,8 +13842,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 if (res.status == 'success') {
 
                     _this2.showMassage(res.data);
-
-                    __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', res);
+                    $('#update-todo').modal('hide');
+                    __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', res.data);
                 }
             }).catch(function (error) {
 
@@ -13993,7 +13865,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 65 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -14186,7 +14058,7 @@ var staticRenderFns = [
     return _c(
       "button",
       { staticClass: "btn btn-primary btn-block", attrs: { type: "submit" } },
-      [_c("i", { staticClass: "glyphicon glyphicon-ok" }), _vm._v(" Save")]
+      [_c("i", { staticClass: "glyphicon glyphicon-ok" }), _vm._v("Update")]
     )
   }
 ]
@@ -14196,6 +14068,124 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-da857834", module.exports)
+  }
+}
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "wrap" },
+    [
+      _c("div", { staticClass: "table-responsive" }, [
+        _c(
+          "table",
+          { staticClass: "table table-bordered table-striped" },
+          [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._l(_vm.todos, function(value, index) {
+              return _c(
+                "tr",
+                {
+                  key: index,
+                  staticClass: "tr",
+                  staticStyle: { "border-bottom": "1px solid #ccc" }
+                },
+                [
+                  _c("td", [_vm._v(_vm._s(value.name))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(value.title))]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("img", {
+                      staticStyle: { height: "90px" },
+                      attrs: { src: _vm.url + "/images/" + value.image }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-success",
+                        attrs: { href: "" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.editTodo(value.id)
+                          }
+                        }
+                      },
+                      [_vm._v("edit")]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-danger",
+                        attrs: { href: "" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.deleteTodo(value.id)
+                          }
+                        }
+                      },
+                      [_vm._v("delete")]
+                    )
+                  ])
+                ]
+              )
+            })
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          { staticClass: "btn btn-success", on: { click: _vm.goBack } },
+          [_vm._v("Back To previous")]
+        )
+      ]),
+      _vm._v(" "),
+      _c("update-todo")
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", [_vm._v("Name")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Title")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Image")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Edit")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Delete")])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-d47fb4fc", module.exports)
   }
 }
 
