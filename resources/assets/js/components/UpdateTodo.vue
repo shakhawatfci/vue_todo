@@ -132,8 +132,10 @@
                  if(res.status == 'success'){
                  
                   	this.showMassage(res.data);
+                    
                     $('#update-todo').modal('hide');
-                    EventBus.$emit('todo-created',res.data);
+
+                    EventBus.$emit('todo-created',1);
 
                  }
 

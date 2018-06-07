@@ -13842,8 +13842,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 if (res.status == 'success') {
 
                     _this2.showMassage(res.data);
+
                     $('#update-todo').modal('hide');
-                    __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', res.data);
+
+                    __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', 1);
                 }
             }).catch(function (error) {
 
