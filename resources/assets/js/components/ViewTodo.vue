@@ -11,11 +11,11 @@
 					<th>Delete</th>
 				</tr>
 
-				<tr class="tr" v-for="(value,index) in todos" :key="index" style="border-bottom:1px solid #ccc;">
+				<tr  class="tr" v-for="(value,index) in todos.data"  style="border-bottom:1px solid #ccc;">
 
 					<td>{{ value.name }}</td>
 					<td>{{ value.title }}</td>
-					<td><img :src="url+'/images/'+value.image" style="height:90px"></td>
+					<td><img :src="url+'images/'+value.image" style="height:90px"></td>
 					<td><a href="" class="btn btn-success" @click.prevent="editTodo(value.id)">edit</a></td>
 					<td><a href="" class="btn btn-danger" @click.prevent="deleteTodo(value.id)">delete</a></td>
 
@@ -24,6 +24,33 @@
 			</table>
 			<button class="btn btn-success" @click="goBack">Back To previous</button>
 		</div>
+
+		     <div class="row">
+            <div class="text-center col-md-12" v-if="todos.last_page > 1">
+                <ul class="pagination">
+                    <li :class="[ ((todos.current_page == 1) ? 'disabled' : '') ]">
+                         <a :href="'?page='+todos.current_page" @click.prevent="pageClicked(todos.current_page-1)" aria-label="Previous" v-if="todos.current_page != 1">
+                             <span aria-hidden="true">«</span>
+                         </a>
+                        <a v-else>
+                            <span  aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                    <li v-for="pageNo in range(paginateLoop, numberOfPage)"
+                        :class="[ ((todos.current_page == pageNo) ? 'active' : '') ]">
+                        <a :href="'?page='+pageNo" @click.prevent="pageClicked(pageNo)">{{ pageNo }}</a>
+                    </li>
+                    <li :class="[ ((todos.current_page == todos.last_page) ? 'disabled' : '') ]" >
+                        <a  :href="'?page='+todos.current_page" @click.prevent="pageClicked(todos.current_page+1)" aria-label="Next" v-if="todos.current_page != todos.last_page">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                        <a v-else>
+                            <span  aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
 		<update-todo></update-todo>
 	</div>
@@ -70,12 +97,14 @@ export default {
 
 	methods : {
 
-		getData(){
+		getData(pageNo=1){
 
-			axios.get(base_url+"/todoList")
+
+
+			axios.get(base_url+"/todoList?page="+pageNo)
 			.then(response => {
-
 				this.todos = response.data;
+				
 			}).catch(err => {
 
 				console.log(err);
@@ -119,6 +148,18 @@ export default {
 
         },
 
+		range(start, count) {
+        return Array.apply(0, Array(count))
+            .map(function (element, index){
+                return index + start;
+            });
+   		 },
+
+   		  pageClicked(pageNo){
+                var vm = this;
+                vm.getData(pageNo);
+            },
+
 		showMassage(data) {
 			if (data.status == 'success') {
 				toastr.success(data.message, 'Success Alert', {timeOut: 5000});
@@ -133,7 +174,32 @@ export default {
 
 		}
 		
-	}  
+	},
+
+	computed: {
+            paginateLoop(){
+                let todos = this.todos;
+
+                if(todos.last_page > 11){
+                    if((todos.last_page - 5) <= todos.current_page){
+                        return todos.last_page - 10;
+                    }
+
+                    if(todos.current_page > 6){
+                        return todos.current_page - 5;
+                    }
+                }
+                return 1;
+            },
+
+            numberOfPage(){
+                if(this.todos.last_page < 11){
+                    return this.todos.last_page;
+                }else{
+                    return 11;
+                }
+            }
+        }  
 }
 
 

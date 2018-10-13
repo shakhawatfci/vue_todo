@@ -24,7 +24,7 @@
                             </div> 
 
                             <div class="form-group" v-if="!changeImage">
-                                                            <img :src="url+'/images/'+todo.image" class="img-responsive" height="70" width="90">
+                                                            <img :src="url+'images/'+todo.image" class="img-responsive" height="70" width="90">
                             </div>    
 
                             <div class="form-group" v-else>
@@ -93,7 +93,7 @@
                 vm.errors = null;
                 vm.todo = {'id':'','name':'','title':'','image':'','imageStatus':0};
 
-                // EventBus.$emit('todo-created',vm.todo);
+                EventBus.$emit('todo-created',vm.todo);
             });
             },
 
@@ -133,9 +133,10 @@
                  
                   	this.showMassage(res.data);
                     
-                    $('#update-todo').modal('hide');
+                    // $('#update-todo').modal('hide');
 
                     EventBus.$emit('todo-created',1);
+                      $('#update-todo').modal('hide');
 
                  }
 

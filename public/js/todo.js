@@ -13570,6 +13570,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -13578,86 +13605,121 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
-	components: {
+  components: {
 
-		'update-todo': __WEBPACK_IMPORTED_MODULE_1__UpdateTodo_vue___default.a
+    'update-todo': __WEBPACK_IMPORTED_MODULE_1__UpdateTodo_vue___default.a
 
-	},
+  },
 
-	data: function data() {
+  data: function data() {
 
-		return {
+    return {
 
-			todos: [],
-			url: ''
+      todos: [],
+      url: ''
 
-		};
-	},
-	created: function created() {
+    };
+  },
+  created: function created() {
 
-		var _this = this;
+    var _this = this;
 
-		this.getData();
+    this.getData();
 
-		this.url = base_url;
+    this.url = base_url;
 
-		__WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$on('todo-created', function () {
-			window.history.pushState({}, null, location.pathname);
-			_this.getData();
-		});
-	},
+    __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$on('todo-created', function () {
+      window.history.pushState({}, null, location.pathname);
+      _this.getData();
+    });
+  },
 
 
-	methods: {
-		getData: function getData() {
-			var _this2 = this;
+  methods: {
+    getData: function getData() {
+      var _this2 = this;
 
-			axios.get(base_url + "/todoList").then(function (response) {
+      var pageNo = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
-				_this2.todos = response.data;
-			}).catch(function (err) {
 
-				console.log(err);
-			});
-		},
-		editTodo: function editTodo(id) {
+      axios.get(base_url + "/todoList?page=" + pageNo).then(function (response) {
+        _this2.todos = response.data;
+      }).catch(function (err) {
 
-			__WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('edit-buton-clicked', id);
-		},
-		deleteTodo: function deleteTodo(id) {
-			var _this3 = this;
+        console.log(err);
+      });
+    },
+    editTodo: function editTodo(id) {
 
-			if (confirm('Are You Sure ?')) {
+      __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('edit-buton-clicked', id);
+    },
+    deleteTodo: function deleteTodo(id) {
+      var _this3 = this;
 
-				axios.delete(base_url + "todo/delete/" + id).then(function (response) {
+      if (confirm('Are You Sure ?')) {
 
-					if (response.data.status == 'success') {
+        axios.delete(base_url + "todo/delete/" + id).then(function (response) {
 
-						_this3.showMassage(response.data);
+          if (response.data.status == 'success') {
 
-						__WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', response.data);
-					} else {
+            _this3.showMassage(response.data);
 
-						_this3.showMassage(response.data);
-					}
-				}).catch(function (err) {
+            __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', response.data);
+          } else {
 
-					console.log(err);
-				});
-			}
-		},
-		showMassage: function showMassage(data) {
-			if (data.status == 'success') {
-				toastr.success(data.message, 'Success Alert', { timeOut: 5000 });
-			} else {
-				toastr.error(data.message, 'Error Alert', { timeOut: 5000 });
-			}
-		},
-		goBack: function goBack() {
+            _this3.showMassage(response.data);
+          }
+        }).catch(function (err) {
 
-			window.history.back();
-		}
-	}
+          console.log(err);
+        });
+      }
+    },
+    range: function range(start, count) {
+      return Array.apply(0, Array(count)).map(function (element, index) {
+        return index + start;
+      });
+    },
+    pageClicked: function pageClicked(pageNo) {
+      var vm = this;
+      vm.getData(pageNo);
+    },
+    showMassage: function showMassage(data) {
+      if (data.status == 'success') {
+        toastr.success(data.message, 'Success Alert', { timeOut: 5000 });
+      } else {
+        toastr.error(data.message, 'Error Alert', { timeOut: 5000 });
+      }
+    },
+    goBack: function goBack() {
+
+      window.history.back();
+    }
+  },
+
+  computed: {
+    paginateLoop: function paginateLoop() {
+      var todos = this.todos;
+
+      if (todos.last_page > 11) {
+        if (todos.last_page - 5 <= todos.current_page) {
+          return todos.last_page - 10;
+        }
+
+        if (todos.current_page > 6) {
+          return todos.current_page - 5;
+        }
+      }
+      return 1;
+    },
+    numberOfPage: function numberOfPage() {
+      if (this.todos.last_page < 11) {
+        return this.todos.last_page;
+      } else {
+        return 11;
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -13805,7 +13867,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             vm.errors = null;
             vm.todo = { 'id': '', 'name': '', 'title': '', 'image': '', 'imageStatus': 0 };
 
-            // EventBus.$emit('todo-created',vm.todo);
+            __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', vm.todo);
         });
     },
 
@@ -13843,9 +13905,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                     _this2.showMassage(res.data);
 
-                    $('#update-todo').modal('hide');
+                    // $('#update-todo').modal('hide');
 
                     __WEBPACK_IMPORTED_MODULE_0__vue_assets__["EventBus"].$emit('todo-created', 1);
+                    $('#update-todo').modal('hide');
                 }
             }).catch(function (error) {
 
@@ -13966,7 +14029,7 @@ var render = function() {
                       _c("img", {
                         staticClass: "img-responsive",
                         attrs: {
-                          src: _vm.url + "/images/" + _vm.todo.image,
+                          src: _vm.url + "images/" + _vm.todo.image,
                           height: "70",
                           width: "90"
                         }
@@ -14092,11 +14155,10 @@ var render = function() {
           [
             _vm._m(0),
             _vm._v(" "),
-            _vm._l(_vm.todos, function(value, index) {
+            _vm._l(_vm.todos.data, function(value, index) {
               return _c(
                 "tr",
                 {
-                  key: index,
                   staticClass: "tr",
                   staticStyle: { "border-bottom": "1px solid #ccc" }
                 },
@@ -14108,7 +14170,7 @@ var render = function() {
                   _c("td", [
                     _c("img", {
                       staticStyle: { height: "90px" },
-                      attrs: { src: _vm.url + "/images/" + value.image }
+                      attrs: { src: _vm.url + "images/" + value.image }
                     })
                   ]),
                   _vm._v(" "),
@@ -14157,6 +14219,120 @@ var render = function() {
           { staticClass: "btn btn-success", on: { click: _vm.goBack } },
           [_vm._v("Back To previous")]
         )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _vm.todos.last_page > 1
+          ? _c("div", { staticClass: "text-center col-md-12" }, [
+              _c(
+                "ul",
+                { staticClass: "pagination" },
+                [
+                  _c(
+                    "li",
+                    { class: [_vm.todos.current_page == 1 ? "disabled" : ""] },
+                    [
+                      _vm.todos.current_page != 1
+                        ? _c(
+                            "a",
+                            {
+                              attrs: {
+                                href: "?page=" + _vm.todos.current_page,
+                                "aria-label": "Previous"
+                              },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  _vm.pageClicked(_vm.todos.current_page - 1)
+                                }
+                              }
+                            },
+                            [
+                              _c("span", { attrs: { "aria-hidden": "true" } }, [
+                                _vm._v("«")
+                              ])
+                            ]
+                          )
+                        : _c("a", [
+                            _c("span", { attrs: { "aria-hidden": "true" } }, [
+                              _vm._v("«")
+                            ])
+                          ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _vm._l(
+                    _vm.range(_vm.paginateLoop, _vm.numberOfPage),
+                    function(pageNo) {
+                      return _c(
+                        "li",
+                        {
+                          class: [
+                            _vm.todos.current_page == pageNo ? "active" : ""
+                          ]
+                        },
+                        [
+                          _c(
+                            "a",
+                            {
+                              attrs: { href: "?page=" + pageNo },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  _vm.pageClicked(pageNo)
+                                }
+                              }
+                            },
+                            [_vm._v(_vm._s(pageNo))]
+                          )
+                        ]
+                      )
+                    }
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "li",
+                    {
+                      class: [
+                        _vm.todos.current_page == _vm.todos.last_page
+                          ? "disabled"
+                          : ""
+                      ]
+                    },
+                    [
+                      _vm.todos.current_page != _vm.todos.last_page
+                        ? _c(
+                            "a",
+                            {
+                              attrs: {
+                                href: "?page=" + _vm.todos.current_page,
+                                "aria-label": "Next"
+                              },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  _vm.pageClicked(_vm.todos.current_page + 1)
+                                }
+                              }
+                            },
+                            [
+                              _c("span", { attrs: { "aria-hidden": "true" } }, [
+                                _vm._v("»")
+                              ])
+                            ]
+                          )
+                        : _c("a", [
+                            _c("span", { attrs: { "aria-hidden": "true" } }, [
+                              _vm._v("»")
+                            ])
+                          ])
+                    ]
+                  )
+                ],
+                2
+              )
+            ])
+          : _vm._e()
       ]),
       _vm._v(" "),
       _c("update-todo")

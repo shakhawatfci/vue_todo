@@ -22,7 +22,7 @@ class TodoListController extends Controller
  public function TodoList(){
 
 
-    $result = TodoList::orderBy('id','desc')->get();
+    $result = TodoList::orderBy('id','desc')->paginate(5);
 
     return $result;
 }
@@ -45,11 +45,18 @@ class TodoListController extends Controller
      */
     public function store(Request $request)
     {
+   
+   // image validation rules added in appserviceproviders 
 
+    //     $messages = [
+    // 'base64image' => 'The :field must be an image.',
+    // ];
       $this->validate($request, [
         'name'  => 'required',
         'title' => 'required',
-            // 'image' => 'required|image64:jpeg,jpg,png'
+        'image' => 'required|base64image'
+    ],[
+    'base64image' => 'The :attribute field must be an image.',
     ]);
 
       try{
